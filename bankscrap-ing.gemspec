@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version  = Bankscrap::ING::VERSION
   spec.authors  = ['Raúl']
   spec.email    = ['raulmarcosl@gmail.coms']
-  spec.summary  = %q{ING adapter for Bankscrap}
+  spec.summary  = 'ING adapter for Bankscrap'
   spec.homepage = ''
   spec.license  = 'MIT'
 
@@ -19,6 +19,9 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'bankscrap',   '~> 1.0'
   spec.add_runtime_dependency 'rmagick',     '~> 2.2', '>= 2.2.2'
+
   spec.add_development_dependency 'bundler', '~> 1.7'
   spec.add_development_dependency 'rake',    '~> 10.0'
+  spec.add_development_dependency 'byebug',  '~> 8.2', '>= 8.2.5'
+  spec.add_development_dependency 'rubocop', '~> 0.39.0'
 end

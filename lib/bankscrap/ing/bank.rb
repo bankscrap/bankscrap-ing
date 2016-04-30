@@ -8,7 +8,7 @@ require 'tempfile'
 module Bankscrap
   module ING
     class Bank < ::Bankscrap::Bank
-      BASE_ENDPOINT      = 'https://ing.ingdirect.es/'
+      BASE_ENDPOINT      = 'https://ing.ingdirect.es/'.freeze
       LOGIN_ENDPOINT     = BASE_ENDPOINT + 'genoma_login/rest/session'
       POST_AUTH_ENDPOINT = BASE_ENDPOINT + 'genoma_api/login/auth/response'
       CLIENT_ENDPOINT    = BASE_ENDPOINT + 'genoma_api/rest/client'
@@ -16,7 +16,7 @@ module Bankscrap
 
       SAMPLE_WIDTH     = 30
       SAMPLE_HEIGHT    = 30
-      SAMPLE_ROOT_PATH = '/numbers'
+      SAMPLE_ROOT_PATH = '/numbers'.freeze
 
       def initialize(user, password, log: false, debug: false, extra_args:)
         @dni      = user
@@ -157,7 +157,6 @@ module Bankscrap
         real_numbers = []
         current_numbers = Magick::ImageList.new(*current_pinpad_paths)
         0.upto(9) do |i|
-          current_number_img = current_numbers[i]
           pixel_diffs = []
           0.upto(9) do |j|
             sample_number_img = Magick::ImageList.new(sample_number_path(j)).first
@@ -184,7 +183,6 @@ module Bankscrap
 
           diff += red_diff + green_diff + blue_diff
         end
-
         diff
       end
 
@@ -238,7 +236,7 @@ module Bankscrap
           id: data['uuid'],
           amount: amount,
           currency: data['EUR'],
-          effective_date: Date.strptime(data['effectiveDate'], "%d/%m/%Y"),
+          effective_date: Date.strptime(data['effectiveDate'], '%d/%m/%Y'),
           description: data['description'],
           balance: data['balance']
         )
