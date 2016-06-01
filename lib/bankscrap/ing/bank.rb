@@ -18,19 +18,10 @@ module Bankscrap
       SAMPLE_HEIGHT    = 30
       SAMPLE_ROOT_PATH = '/numbers'.freeze
 
-      def initialize(user, password, log: false, debug: false, extra_args:)
-        @dni      = user
-        @password = password.to_s
-        @birthday = extra_args.with_indifferent_access['birthday']
-        @log      = log
-        @debug    = debug
-
-        initialize_connection
-        bundled_login
-
-        @investments = fetch_investments
-
-        super
+      def initialize(credentials = {})
+        super do
+          @password = @password.to_s
+        end
       end
 
       def balances
@@ -97,13 +88,13 @@ module Bankscrap
 
       private
 
-      def bundled_login
-        selected_positions = login
+      def login
+        selected_positions = get_pin_pad_positions
         ticket = pass_pinpad(selected_positions)
         post_auth(ticket)
       end
 
-      def login
+      def get_pin_pad_positions
         add_headers(
           'Accept'       => 'application/json, text/javascript, */*; q=0.01',
           'Content-Type' => 'application/json; charset=utf-8'
