@@ -201,9 +201,8 @@ module Bankscrap
           bank: self,
           id: data['uuid'],
           name: data['name'],
-          balance: data['balance'],
-          currency: 'EUR',
-          available_balance: data['availableBalance'],
+          balance: Money.new(data['balance'] * 100, 'EUR'),
+          available_balance: Money.new(data['availableBalance'] * 100, 'EUR'),
           description: (data['alias'] || data['name']),
           iban: data['iban'],
           bic: data['bic']
@@ -228,10 +227,9 @@ module Bankscrap
           account: account,
           id: data['uuid'],
           amount: amount,
-          currency: data['EUR'],
           effective_date: Date.strptime(data['effectiveDate'], '%d/%m/%Y'),
           description: data['description'],
-          balance: data['balance']
+          balance: Money.new(data['balance'] * 100, 'EUR')
         )
       end
     end
