@@ -18,7 +18,7 @@ module Bankscrap
       SAMPLE_HEIGHT    = 30
       SAMPLE_ROOT_PATH = '/numbers'.freeze
 
-      REQUIRED_CREDENTIALS  = [:nif, :password, :birthday]
+      REQUIRED_CREDENTIALS  = [:dni, :password, :birthday]
 
       def initialize(credentials = {})
         super do
@@ -105,7 +105,7 @@ module Bankscrap
         params = {
           loginDocument: {
             documentType: 0,
-            document: @nif
+            document: @dni
           },
           birthday: @birthday.to_s,
           companyDocument: nil,
