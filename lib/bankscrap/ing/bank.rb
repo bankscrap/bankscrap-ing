@@ -18,19 +18,12 @@ module Bankscrap
       SAMPLE_HEIGHT    = 30
       SAMPLE_ROOT_PATH = '/numbers'.freeze
 
-      def initialize(user, password, log: false, debug: false, extra_args:)
-        @dni      = user
-        @password = password.to_s
-        @birthday = extra_args.with_indifferent_access['birthday']
-        @log      = log
-        @debug    = debug
+      REQUIRED_CREDENTIALS  = [:dni, :password, :birthday]
 
-        initialize_connection
-        bundled_login
-
-        @investments = fetch_investments
-
-        super
+      def initialize(credentials = {})
+        super do
+          @password = @password.to_s
+        end
       end
 
       def balances
@@ -97,13 +90,13 @@ module Bankscrap
 
       private
 
-      def bundled_login
-        selected_positions = login
+      def login
+        selected_positions = get_pin_pad_positions
         ticket = pass_pinpad(selected_positions)
         post_auth(ticket)
       end
 
-      def login
+      def get_pin_pad_positions
         add_headers(
           'Accept'       => 'application/json, text/javascript, */*; q=0.01',
           'Content-Type' => 'application/json; charset=utf-8'
@@ -112,7 +105,7 @@ module Bankscrap
         params = {
           loginDocument: {
             documentType: 0,
-            document: @dni.to_s
+            document: @dni
           },
           birthday: @birthday.to_s,
           companyDocument: nil,
@@ -208,9 +201,8 @@ module Bankscrap
           bank: self,
           id: data['uuid'],
           name: data['name'],
-          balance: data['balance'],
-          currency: 'EUR',
-          available_balance: data['availableBalance'],
+          balance: Money.new(data['balance'] * 100, 'EUR'),
+          available_balance: Money.new(data['availableBalance'] * 100, 'EUR'),
           description: (data['alias'] || data['name']),
           iban: data['iban'],
           bic: data['bic']
@@ -235,10 +227,9 @@ module Bankscrap
           account: account,
           id: data['uuid'],
           amount: amount,
-          currency: data['EUR'],
           effective_date: Date.strptime(data['effectiveDate'], '%d/%m/%Y'),
           description: data['description'],
-          balance: data['balance']
+          balance: Money.new(data['balance'] * 100, 'EUR')
         )
       end
     end
