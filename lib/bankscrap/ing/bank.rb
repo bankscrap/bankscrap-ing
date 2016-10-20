@@ -20,6 +20,8 @@ module Bankscrap
 
       REQUIRED_CREDENTIALS  = [:dni, :password, :birthday]
 
+      CURRENCY = Money::Currency.new("EUR")
+
       def initialize(credentials = {})
         super do
           @password = @password.to_s
@@ -201,8 +203,8 @@ module Bankscrap
           bank: self,
           id: data['uuid'],
           name: data['name'],
-          balance: Money.new(data['balance'] * 100, 'EUR'),
-          available_balance: Money.new(data['availableBalance'] * 100, 'EUR'),
+          balance: Money.new(data['balance'] * 100, CURRENCY),
+          available_balance: Money.new(data['availableBalance'] * 100, CURRENCY),
           description: (data['alias'] || data['name']),
           iban: data['iban'],
           bic: data['bic']
@@ -215,21 +217,21 @@ module Bankscrap
           id: data['uuid'],
           name: data['name'],
           balance: data['balance'],
-          currency: 'EUR',
+          currency: CURRENCY.iso_code,
           investment: data['investment']
         )
       end
 
       # Build a transaction object from API data
       def build_transaction(data, account)
-        amount = Money.new(data['amount'] * 100, data['currency'])
+        amount = Money.new(data['amount'] * 100, CURRENCY)
         Transaction.new(
           account: account,
           id: data['uuid'],
           amount: amount,
           effective_date: Date.strptime(data['effectiveDate'], '%d/%m/%Y'),
           description: data['description'],
-          balance: Money.new(data['balance'] * 100, 'EUR')
+          balance: Money.new(data['balance'] * 100, CURRENCY)
         )
       end
     end
