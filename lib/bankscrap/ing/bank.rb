@@ -18,9 +18,9 @@ module Bankscrap
       SAMPLE_HEIGHT    = 30
       SAMPLE_ROOT_PATH = '/numbers'.freeze
 
-      REQUIRED_CREDENTIALS  = [:dni, :password, :birthday]
+      REQUIRED_CREDENTIALS = [:dni, :password, :birthday].freeze
 
-      CURRENCY = Money::Currency.new("EUR")
+      CURRENCY = Money::Currency.new('EUR')
 
       def initialize(credentials = {})
         super do
@@ -68,15 +68,7 @@ module Bankscrap
       def fetch_transactions_for(account, start_date: Date.today - 1.month, end_date: Date.today)
         log "fetch_transactions for #{account.id}"
 
-        # The API allows any limit to be passed, but we better keep
-        # being good API citizens and make a loop with a short limit
-        params = {
-          fromDate: start_date.strftime('%d/%m/%Y'),
-          toDate: end_date.strftime('%d/%m/%Y'),
-          limit: 25,
-          offset: 0
-        }
-
+        params = build_transactions_request_params(start_date, end_date)
         transactions = []
         loop do
           request = get("#{PRODUCTS_ENDPOINT}/#{account.id}/movements", params: params)
@@ -84,21 +76,32 @@ module Bankscrap
           transactions += (json['elements'] || []).map do |transaction|
             build_transaction(transaction, account)
           end
-          params[:offset] += 25
+          params[:offset] += params[:limit]
           break if (params[:offset] > json['total']) || json['elements'].blank?
         end
         transactions
       end
 
+      def build_transactions_request_params(start_date, end_date)
+        # The API allows any limit to be passed, but we better keep
+        # being good API citizens and make a loop with a short limit
+        {
+          fromDate: start_date.strftime('%d/%m/%Y'),
+          toDate: end_date.strftime('%d/%m/%Y'),
+          limit: 25,
+          offset: 0
+        }
+      end
+
       private
 
       def login
-        selected_positions = get_pin_pad_positions
+        selected_positions = request_pin_pad_positions
         ticket = pass_pinpad(selected_positions)
         post_auth(ticket)
       end
 
-      def get_pin_pad_positions
+      def request_pin_pad_positions
         add_headers(
           'Accept'       => 'application/json, text/javascript, */*; q=0.01',
           'Content-Type' => 'application/json; charset=utf-8'
@@ -118,7 +121,7 @@ module Bankscrap
         current_pinpad_paths = save_pinpad_numbers(response['pinpad'])
         pinpad_numbers = recognize_pinpad_numbers(current_pinpad_paths)
 
-        get_correct_positions(pinpad_numbers, response['pinPositions'])
+        correct_positions(pinpad_numbers, response['pinPositions'])
       end
 
       def pass_pinpad(positions)
@@ -185,7 +188,7 @@ module Bankscrap
         img.get_pixels(x, y, SAMPLE_WIDTH, SAMPLE_HEIGHT)
       end
 
-      def get_correct_positions(pinpad_numbers, positions)
+      def correct_positions(pinpad_numbers, positions)
         first_digit  = @password[positions[0] - 1]
         second_digit = @password[positions[1] - 1]
         third_digit  = @password[positions[2] - 1]
