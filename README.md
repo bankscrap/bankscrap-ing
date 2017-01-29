@@ -1,4 +1,7 @@
-# Bankscrap::ING
+# 💸 Bankscrap::ING 💸
+
+[![](http://188.166.39.57:3000/badge.svg)](http://188.166.39.57:3000)
+[![Gem Version](https://badge.fury.io/rb/bankscrap-ing.svg)](https://badge.fury.io/rb/bankscrap-ing)
 
 Bankscrap adapter for the API behind ING's [mobile app](https://play.google.com/store/apps/details?id=www.ingdirect.nativeframe&hl=en).
 This adapter is only valid for personal accounts (the ones that work with that mobile APP), not for company accounts.
@@ -26,7 +29,7 @@ For usage instructions please read [Bankscrap readme](https://github.com/bankscr
 
 ## Contributing
 
-1. Fork it ( https://github.com/bankscrap/bankscrap-ing/fork )
+1. [Fork it](https://github.com/bankscrap/bankscrap-ing/fork)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
