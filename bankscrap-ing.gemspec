@@ -17,11 +17,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'bankscrap',   '~> 2.0.0'
-  spec.add_runtime_dependency 'rmagick',     '~> 2.2', '>= 2.2.2'
+  spec.add_runtime_dependency 'bankscrap', '~> 2.0.0'
+  spec.add_runtime_dependency 'levenshtein-ffi', '~> 1.1'
 
   spec.add_development_dependency 'bundler', '~> 1.7'
-  spec.add_development_dependency 'rake',    '~> 10.0'
-  spec.add_development_dependency 'byebug',  '~> 8.2', '>= 8.2.5'
-  spec.add_development_dependency 'rubocop', '~> 0.39.0'
+  spec.add_development_dependency 'rake', '~> 10.0'
 end
